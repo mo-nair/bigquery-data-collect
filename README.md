@@ -1,5 +1,14 @@
-# bigquery-data-collect
-Scripts to collect data from BigQuery.
+# Readme
+Overview: this readme aims to go through the steps that help you navigate the ethereum OSS development analysis. 
+
+We analyze All Event by first running SQL query on Bigquery and retrieve activity data from Github Archive. We secondly analyze core users by Python. Lastly, we use R for visualization.
+
+Side note: because of information shortage, we analyze "2013 & 2014" differently from "2015 to present".
+
+The final output data is stored in "Data" folder.
+
+The step-by-step procedures are listed below. 
+
 
 # Ethereum Project: Data Collection Manuscript
 Alina Chen, Mariia Petryk, Jiasun Li
@@ -10,7 +19,7 @@ You will need access to [BigQuery](https://cloud.google.com/bigquery), a data wa
 
 ### 2015 to Present
 
-On BigQuery, run the following script: https://docs.google.com/document/d/1EgzNXdJjzMDhnUz9BjEuB-uMK0V9h5Z47QJSQcJSVnY/edit?usp=sharing.
+On BigQuery, run [Project Ethereum - All Events Code](<Code/BigQuery/Project Ethereum - All Events Code.txt>)
 
 This script calculates and returns the frequency of twenty-eight different events: 
 
@@ -22,7 +31,7 @@ BigQuery should return a table with entries that specify repositories, dates, ac
 
 Save the results as a local CSV file. Repeat the script for 2016, 2017, 2018, 2019, 2020, 2021, 2022, and 2023 by changing the line
 ```sql
-FROM (SELECT * FROM `githubarchive.month.*\` WHERE _TABLE_SUFFIX BETWEEN '201501' AND '201512') t1 WHERE t1.repo.name LIKE 'ethereum/%'
+FROM (SELECT * FROM `githubarchive.month.*` WHERE _TABLE_SUFFIX BETWEEN '201501' AND '201512') t1 WHERE t1.repo.name LIKE 'ethereum/%'
 ```
 accordingly. Save each result as a CSV file.
 
@@ -32,16 +41,16 @@ Due to information shortages, we will begin to work locally on BigQuery, instead
 
 *mariia explain how you retrieved the individual data files for each month of 2013 and 2014*
 
-On any IDE, such as Visual Studio Code, run the following Python script:
-https://docs.google.com/document/d/1XePirIttPQVDBOA5PNg7YpgknRt947mQkitOEz4IyB4/edit?usp=sharing.
+On any IDE, run the following Python script:
+[Project Ethereum - 2013 and 2014 Merge Code](<Code/Project Ethereum - 2013 and 2014 Merge Code.py>)
 
 This script combines each CSV file into one called AllData20132014.csv.
 
 *mariia used her own SQL script to generate another merged file maybe have that instead*
 
-On BigQuery, click add to upload a local file. Select AllData20132014.csv and a dataset to create the table. Then, run the following script: https://docs.google.com/document/d/1at-KWEDrOUjcGVi8TT8X3ndWlIEPeA4fP4e1ztx6Yj8/edit?usp=sharing.
+On BigQuery, click add to upload a local file. Select AllData20132014.csv and a dataset to create the table. Then, run the following script:[Project Ethereum - 2013 and 2014 All Events Code](<Code/BigQuery/Project Ethereum - 2013 and 2014 All Events Code.txt>) 
 
-Replace this line, `from ethereum-project-383415.Data.Data20132014Merged`, with your project and dataset name. My project is named ethereum-project-383415 and my dataset is named Data. This can vary, depending on user preferences.
+Replace this line, `from ethereum-project-383415.Data.Data20132014Merged`, with your project and dataset name. My project is named `ethereum-project-383415` and my dataset is named Data. This can vary, depending on user preferences.
 
 This should generate twenty-eight different events for the years 2013 and 2014. Save the result as a CSV file.
 
@@ -49,7 +58,7 @@ This should generate twenty-eight different events for the years 2013 and 2014. 
 
 ### 2015 to Present
 
-To test our first hypothesis, run the following Python script using an IDE: https://docs.google.com/document/d/1ZHnmQ78TM00MtUnYASRu1zEaS27ve95XuVL7YlXi97k/edit?usp=sharing.
+To test our first hypothesis, run the following Python script using an IDE: [Project Ethereum - Core Users](<Code/Project Ethereum - Core Users.py>)
 
 Change the following lines: `df = pd.read_csv('Data2015.csv', low_memory = False), merged_df[columns_to_display].to_csv('Data2015CoreUser.csv', index = False)` to match the corresponding year. Repeat the script for 2016, 2017, 2018, 2019, 2020, 2021, 2022, and 2023. A file containing the results for each year should be generated in the chosen directory.
 
@@ -57,13 +66,13 @@ Change the following lines: `df = pd.read_csv('Data2015.csv', low_memory = False
 
 In the CSV file that contains all the events for 2013 and 2014, create an empty column called actor_id to the right of date1 and to the left of actor_login.
 
-Now, run the following Python script using an IDE: https://docs.google.com/document/d/18EIGAKRlG2rcNQChECNuSr52YKeBc5bCjYg3vyx2ibw/edit?usp=sharing.
+Now, run the following Python script using an IDE: [Project Ethereum - 2013 and 2014 Core Users](<Code/Project Ethereum - 2013 and 2014 Core Users.py>)
 
 actor_login is used as the unique identifier instead of actor_id.
 
 ## Shiny Visualization
 
-The website can be found at the following URL: https://alinachen.shinyapps.io/App-1/. The code for the application can be found in Project Ethereum – Visualization.R. 
+The website can be found at the following URL: https://alinachen.shinyapps.io/App-1/. The code for the application can be found in [Project Ethereum - Visualization.R](<Code/Project Ethereum - Visualization.R>). 
 
 The website allows the user to choose how they want the data to be aggregated (days, weeks, months, and years). The user can also select a custom date range and the variable the user wants to compare time to. If the custom date range selected cannot be aggregated, for example trying to aggregate five days monthly, no data will be displayed.
 
