@@ -37,16 +37,12 @@ accordingly. Save each result as a CSV file.
 
 ### 2013 and 2014
 
-Due to information shortages, we will begin to work locally on BigQuery, instead of relying on GitHub Archive. Prior to 2015, only actor logins were used to identify actors. Actor IDs had not been assigned to users. This resulted in slightly different changes in the scripts we used.
-
-*mariia explain how you retrieved the individual data files for each month of 2013 and 2014*
+Due to information shortages, we will begin to work locally on BigQuery, instead of relying on GitHub Archive. Prior to 2015, only actor logins were used to identify actors. Actor IDs had not been assigned to users, only actor login. Therefore, we queried the user login only and used it as a primary ID to match data before 2015 and after.
 
 On any IDE, run the following Python script:
 [Project Ethereum - 2013 and 2014 Merge Code](<Code/Project Ethereum - 2013 and 2014 Merge Code.py>)
 
 This script combines each CSV file into one called AllData20132014.csv.
-
-*mariia used her own SQL script to generate another merged file maybe have that instead*
 
 On BigQuery, click add to upload a local file. Select AllData20132014.csv and a dataset to create the table. Then, run the following script:[Project Ethereum - 2013 and 2014 All Events Code](<Code/BigQuery/Project Ethereum - 2013 and 2014 All Events Code.txt>) 
 
