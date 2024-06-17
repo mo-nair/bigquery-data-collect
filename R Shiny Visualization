@@ -1,0 +1,13 @@
+## Shiny Visualization
+
+The website can be found at the following URL: https://alinachen.shinyapps.io/App-1/. The code for the application can be found in [Project Ethereum - Visualization.R](<Code/Project Ethereum - Visualization.R>). 
+
+The website allows the user to choose how they want the data to be aggregated (days, weeks, months, and years). The user can also select a custom date range and the variable the user wants to compare time to. If the custom date range selected cannot be aggregated, for example trying to aggregate five days monthly, no data will be displayed.
+
+The website also allows the user to customize the graph, giving them an option to change the color of the line and whether it is solid or dashed. You can also choose to filter out bots from the displayed results by clicking the checkmark next to “Exclude bots?”.
+
+For a working website, you must define the user interface and the server.  When writing the script for the website, remember that the CSV file must be read outside of the definitions for the user interface and the server. The Shiny tutorial found at https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html can be completed for assistance. Website details can be found within the script.
+
+The CSV file is kept locally, so the user does not need to upload a file themselves. The CSV should be kept in the same directory as your R script. It can be found under the name Data_AllYears_Merged.csv.
+
+Please email alinachen2028@gmail.com if you encounter any issues.
