@@ -1,0 +1,18 @@
+## Core Users
+
+### 2015 to Present
+There are several ways to define the OSS core users. 
+One of them proposed in the literature is to designate users who contribute 12% of activities or above within the past 30 days as core, and the rest - are peripheral.
+
+To compute the core developers accoring to this methodology, run the following Python script using an IDE: [Project Ethereum - Core Users](<Code/Project Ethereum - Core Users.py>)
+
+Change the following lines: `df = pd.read_csv('Data2015.csv', low_memory = False), merged_df[columns_to_display].to_csv('Data2015CoreUser.csv', index = False)` to match the corresponding year. Repeat the script for 2016, 2017, 2018, 2019, 2020, 2021, 2022, and 2023. A file containing the results for each year should be generated in the chosen directory.
+
+### 2013 and 2014
+
+In the CSV file that contains all the events for 2013 and 2014, create an empty column called actor_id to the right of date1 and to the left of actor_login.
+
+Now, run the following Python script using an IDE: [Project Ethereum - 2013 and 2014 Core Users](<Code/Project Ethereum - 2013 and 2014 Core Users.py>)
+
+actor_login is used as the unique identifier instead of actor_id.
+
