@@ -47,10 +47,10 @@ BigQuery should return a table with exactly same columns with twenty-eight diffe
 
 Google has 10 MB limitations to export data into local .csv file.
 There are two options to export data effectively.
-# Option 1
+### Option 1
 Query the data within smaller time increments, e.g., couple of months at a time, and export every resulting table. 
 
-# Option 2
+### Option 2
 After querying the data, save the resulting table into a new BigQuery table.
 Query the data from a newly created table by small chunks and export every chunk.
 To keep track of already exported rows and make sure all rows are exported and none are missed, you may number the rows as follows.
