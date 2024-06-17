@@ -10,7 +10,7 @@ The final output data is stored in "Data" folder.
 The step-by-step procedures are listed below. 
 
 
-# Ethereum Project: Data Collection Manuscript
+# BigQuery Data Collection 
 Alina Chen, Mariia Petryk, Jiasun Li
 
 ## All Events
@@ -64,3 +64,22 @@ CREATE TABLE NewTableName AS (
 SELECT *
 FROM NewTableName
 where RowNum between 1 and 40000
+
+## Merge 
+After you finish collecting data from the GHArchive database, you should merge all csv files into one file for each OSS project.
+
+The Python script to merge all files can be accessed via link: [https://github.com/DARLresearchlab/bigquery-data-collect/blob/0f7f8aa4fdc903f0ac3f5e28de891930f6729b65/Code/Project%20Ethereum%20-%202013%20and%202014%20Merge%20Code.py]
+You can run the Python script on any IDE, such as Visual Studio Code, or in Jupyter Notebook.
+
+This script combines all csv files into one.
+
+## Check your work
+
+After you merged all files into one, you should run several sanity checks to make sure of the integrity of data.
+The checks below could be run in MS Excel or using Python.
+
+1. Check duplicates. The data should not contain duplicates, and the duplicates should be removed if found.
+2. Check summary statistics. The min, max, average of the columns should be adequate and within common rationale (e.g., no negative average number of activities per user per day).
+3. Check the distribution of activities by years/months/days. No time periods should be ommited or have abnormally low activities.
+4. No missing data should be in the table. No activity should be labeled as 0.
+
