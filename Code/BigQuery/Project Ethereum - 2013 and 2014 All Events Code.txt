@@ -1,4 +1,4 @@
-﻿SELECT CONCAT('ethereum/', repo_name) AS GhRepo,
+SELECT CONCAT('hyperledger/', repo_name) AS GhRepo,
 CAST(date1 AS DATE) AS date1,
 actor_login AS actor_login,
 COUNT(actor_login) AS num_activities,
@@ -6,7 +6,7 @@ COUNT(DISTINCT CASE WHEN type = 'PushEvent' THEN activity_id ELSE NULL END) AS n
 COUNT(DISTINCT CASE WHEN type = 'CommitCommentEvent' THEN activity_id ELSE NULL END) AS num_dist_commitcomments,
 COUNT(DISTINCT CASE WHEN type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_actors_pushevents,
 COUNT(DISTINCT CASE WHEN type = 'CommitCommentEvent' THEN actor_login ELSE NULL END) AS num_actors_pusheventscomment,
-COUNT(DISTINCT CASE WHEN type = 'PullRequestEvent' AND JSON_EXTRACT(payload, '$.action') = '"opened"' THEN JSON_EXTRACT(payload, '$.number') ELSE NULL END) AS num_dist_pullreqopened, vb
+COUNT(DISTINCT CASE WHEN type = 'PullRequestEvent' AND JSON_EXTRACT(payload, '$.action') = '"opened"' THEN JSON_EXTRACT(payload, '$.number') ELSE NULL END) AS num_dist_pullreqopened, 
 COUNT(DISTINCT CASE WHEN type = 'PullRequestEvent' AND JSON_EXTRACT(payload, '$.action') = '"closed"' THEN JSON_EXTRACT(payload, '$.number') ELSE NULL END) AS num_dist_pullreqclosed,
 COUNT(DISTINCT CASE WHEN type = 'PullRequestEvent' THEN JSON_EXTRACT(payload, '$.number') ELSE NULL END) AS num_dist_pullreqAll,
 COUNT(DISTINCT CASE WHEN type = 'PullRequestReviewCommentEvent' THEN activity_id ELSE NULL END) AS num_dist_pullreqcomments,
@@ -14,9 +14,9 @@ COUNT(DISTINCT CASE WHEN type = 'PullRequestEvent' THEN actor_login ELSE NULL EN
 COUNT(DISTINCT CASE WHEN type = 'PullRequestReviewCommentEvent' THEN actor_login ELSE NULL END) AS num_actors_pullreqcomment,
 COUNT(DISTINCT CASE WHEN type = 'PullRequestEvent' AND JSON_EXTRACT(payload, '$.action') = '"opened"' THEN actor_login ELSE NULL END) AS num_actors_pullreq_opened,
 COUNT(DISTINCT CASE WHEN type = 'PullRequestEvent' AND JSON_EXTRACT(payload, '$.action') = '"closed"' THEN actor_login ELSE NULL END) AS num_actors_pullreq_closed,
-COUNT(DISTINCT CASE WHEN type = 'IssuesEvent' AND JSON_EXTRACT(payload, '$.action') = '"opened"' THEN JSON_EXTRACT(JSON_EXTRACT(payload, '$.issue'), '$.number') ELSE NULL END) AS num_dist_issuesopened,
-COUNT(DISTINCT CASE WHEN type = 'IssuesEvent' AND JSON_EXTRACT(payload, '$.action') = '"closed"' THEN JSON_EXTRACT(JSON_EXTRACT(payload, '$.issue'), '$.number') ELSE NULL END) AS num_dist_issuesclosed,
-COUNT(DISTINCT CASE WHEN type = 'IssuesEvent' THEN JSON_EXTRACT(JSON_EXTRACT(payload, '$.issue'), '$.number') ELSE NULL END) AS num_dist_issuesAll,
+COUNT(DISTINCT CASE WHEN type = 'IssuesEvent' AND JSON_EXTRACT(payload, '$.action') = '"opened"' THEN activity_id ELSE NULL END) AS num_dist_issuesopened,
+COUNT(DISTINCT CASE WHEN type = 'IssuesEvent' AND JSON_EXTRACT(payload, '$.action') = '"closed"' THEN activity_id ELSE NULL END) AS num_dist_issuesclosed,
+COUNT(DISTINCT CASE WHEN type = 'IssuesEvent' THEN activity_id ELSE NULL END) AS num_dist_issuesAll,
 COUNT(DISTINCT CASE WHEN type = 'IssueCommentEvent' THEN activity_id ELSE NULL END) AS num_dist_issuecomments,
 COUNT(DISTINCT CASE WHEN type = 'IssuesEvent' THEN actor_login ELSE NULL END) AS num_actors_issues,
 COUNT(DISTINCT CASE WHEN type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_actors_issuescomment,
@@ -29,6 +29,15 @@ COUNT(DISTINCT CASE WHEN type = 'WatchEvent' THEN activity_id ELSE NULL END) AS 
 COUNT(DISTINCT CASE WHEN type = 'WatchEvent' THEN actor_login ELSE NULL END) AS num_actors_watch,
 COUNT(DISTINCT CASE WHEN type = 'ReleaseEvent' THEN activity_id ELSE NULL END) AS num_releases,
 (CASE WHEN type = 'ReleaseEvent' THEN payload ELSE NULL END) AS release_payload
-from ethereum-project-383415.Data.Data20132014Merged
-GROUP BY GhRepo, date1, actor, actor_login, release_payload
-ORDER BY GhRepo, date1, actor, actor_login, release_payload;
+FROM (
+SELECT 
+ROW_NUMBER () OVER (ORDER BY created_at, repo.name, actor.login) AS activity_id,
+repo.name AS repo_name,
+created_at AS date1,
+actor.login AS actor_login,
+type,
+payload,
+FROM `githubarchive.month.*` WHERE _TABLE_SUFFIX BETWEEN '201312' AND '201412'
+and repo.url like 'https://github.com/ethereum/%')
+GROUP BY GhRepo, date1, actor_login, release_payload
+ORDER BY GhRepo, date1, actor_login, release_payload;
