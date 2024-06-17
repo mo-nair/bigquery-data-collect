@@ -37,45 +37,30 @@ accordingly. Save each result as a CSV file.
 
 ### 2013 and 2014
 
-Due to information shortages, we will begin to work locally on BigQuery, instead of relying on GitHub Archive. Prior to 2015, only actor logins were used to identify actors. Actor IDs had not been assigned to users, only actor login. Therefore, we queried the user login only and used it as a primary ID to match data before 2015 and after.
+GitHub Archive data has a slightly different structure before 2015. For example, only actor logins are available to identify actors, but not actor.id. Also, repository links (repo.url) and names (repo.names) has different format. Therefore, we need to slightly modify the script to retrieve the data in the same structure as 2015 and later.
 
-On any IDE, run the following Python script:
-[Project Ethereum - 2013 and 2014 Merge Code](<Code/Project Ethereum - 2013 and 2014 Merge Code.py>)
+To collect data from 2014 and earlier, run the BigQuery script: [https://github.com/DARLresearchlab/bigquery-data-collect/blob/4fb5d727cf4988813f7a9bc4ffffca7d235d0785/Code/BigQuery/Project%20Ethereum%20-%202013%20and%202014%20All%20Events%20Code.txt] 
 
-This script combines each CSV file into one called AllData20132014.csv.
+BigQuery should return a table with exactly same columns with twenty-eight different events as for 2015 and on. Save the result as a local CSV file.
 
-On BigQuery, click add to upload a local file. Select AllData20132014.csv and a dataset to create the table. Then, run the following script:[Project Ethereum - 2013 and 2014 All Events Code](<Code/BigQuery/Project Ethereum - 2013 and 2014 All Events Code.txt>) 
+## Exporting data from BigQuery
 
-Replace this line, `from ethereum-project-383415.Data.Data20132014Merged`, with your project and dataset name. My project is named `ethereum-project-383415` and my dataset is named Data. This can vary, depending on user preferences.
+Google has 10 MB limitations to export data into local .csv file.
+There are two options to export data effectively.
+# Option 1
+Query the data within smaller time increments, e.g., couple of months at a time, and export every resulting table. 
 
-This should generate twenty-eight different events for the years 2013 and 2014. Save the result as a CSV file.
+# Option 2
+After querying the data, save the resulting table into a new BigQuery table.
+Query the data from a newly created table by small chunks and export every chunk.
+To keep track of already exported rows and make sure all rows are exported and none are missed, you may number the rows as follows.
 
-## Core Users
+CREATE TABLE NewTableName AS (
+  select ROW_NUMBER() OVER (ORDER BY (SELECT 1)) as RowNum, *
+  from TableName
+  where TRUE
+  order by RowNum)
 
-### 2015 to Present
-
-To test our first hypothesis, run the following Python script using an IDE: [Project Ethereum - Core Users](<Code/Project Ethereum - Core Users.py>)
-
-Change the following lines: `df = pd.read_csv('Data2015.csv', low_memory = False), merged_df[columns_to_display].to_csv('Data2015CoreUser.csv', index = False)` to match the corresponding year. Repeat the script for 2016, 2017, 2018, 2019, 2020, 2021, 2022, and 2023. A file containing the results for each year should be generated in the chosen directory.
-
-### 2013 and 2014
-
-In the CSV file that contains all the events for 2013 and 2014, create an empty column called actor_id to the right of date1 and to the left of actor_login.
-
-Now, run the following Python script using an IDE: [Project Ethereum - 2013 and 2014 Core Users](<Code/Project Ethereum - 2013 and 2014 Core Users.py>)
-
-actor_login is used as the unique identifier instead of actor_id.
-
-## Shiny Visualization
-
-The website can be found at the following URL: https://alinachen.shinyapps.io/App-1/. The code for the application can be found in [Project Ethereum - Visualization.R](<Code/Project Ethereum - Visualization.R>). 
-
-The website allows the user to choose how they want the data to be aggregated (days, weeks, months, and years). The user can also select a custom date range and the variable the user wants to compare time to. If the custom date range selected cannot be aggregated, for example trying to aggregate five days monthly, no data will be displayed.
-
-The website also allows the user to customize the graph, giving them an option to change the color of the line and whether it is solid or dashed. You can also choose to filter out bots from the displayed results by clicking the checkmark next to “Exclude bots?”.
-
-For a working website, you must define the user interface and the server.  When writing the script for the website, remember that the CSV file must be read outside of the definitions for the user interface and the server. The Shiny tutorial found at https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html can be completed for assistance. Website details can be found within the script.
-
-The CSV file is kept locally, so the user does not need to upload a file themselves. The CSV should be kept in the same directory as your R script. It can be found under the name Data_AllYears_Merged.csv.
-
-Please email alinachen2028@gmail.com if you encounter any issues.
+SELECT *
+FROM NewTableName
+where RowNum between 1 and 40000
