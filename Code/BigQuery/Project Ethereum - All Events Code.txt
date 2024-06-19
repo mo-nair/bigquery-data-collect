@@ -1,3 +1,4 @@
+FROM (SELECT * FROM `githubarchive.month.*` WHERE _TABLE_SUFFIX BETWEEN '201501' AND '201512') t1 WHERE t1.repo.name LIKE 'ethereum/%'
 ﻿SELECT t1.repo.name AS GhRepo, CAST(created_at AS DATE) AS date1, actor.id AS actor_id, actor.login AS actor_login, COUNT(actor.id) AS num_activities,
 COUNT(DISTINCT CASE WHEN type = 'PushEvent' THEN id ELSE NULL END) AS num_dist_commits,
 COUNT(DISTINCT CASE WHEN type = 'CommitCommentEvent' THEN id ELSE NULL END) AS num_dist_commitcomments,
